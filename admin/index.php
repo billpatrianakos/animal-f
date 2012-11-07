@@ -80,13 +80,13 @@ else {
 					<form method="post" action="new_post.php">
 						<label>Post Title</label>
 						<br />
-						<input type="text" name="title" placeholder="" />
+						<input type="text" name="title" placeholder="Plans for world domination..." />
 						<br />
 						<textarea id="content" name="content" placeholder="Once upon a time..."></textarea>
 						<br /><br />
-						<label>Post excerpt</label>
+						<label>Post excerpt (Optional)</label>
 						<br />
-						<textarea id="excerpt" name="excerpt"></textarea>
+						<textarea id="excerpt" name="excerpt" placeholder="Only write in here if you want the post preview to be different than the first paragraph of the actual blog post"></textarea>
 						<p>
 							<small>Copy and paste a small portion of your post here or write an overview of your post. This will show just below the title of your post on the main page of posts.</small>
 						</p>
@@ -100,7 +100,7 @@ else {
 		<section class="row">
 			<article class="twelve">
 				<p class="centered-text">
-					&copy; Copyright 2012 Everybody | <strong>Animal F.</strong> is a Bill Patrianakos production. Enjoy.
+					&copy; Copyright 2012 Everybody | <strong>Animal F.</strong> is a Bill Patrianakos production. Enjoy. | Version 0.6
 				</p>
 			</article>
 		</section>

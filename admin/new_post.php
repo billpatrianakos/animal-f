@@ -5,35 +5,73 @@
  * By Bill Patrianakos
  */
 
+# Disable Magic Quotes (it messes up the output and we're already accepting input from a trusted source and escaping it ourselves)
+if (get_magic_quotes_gpc()) {
+    $process = array(&$_GET, &$_POST, &$_COOKIE, &$_REQUEST);
+    while (list($key, $val) = each($process)) {
+        foreach ($val as $k => $v) {
+            unset($process[$key][$k]);
+            if (is_array($v)) {
+                $process[$key][stripslashes($k)] = $v;
+                $process[] = &$process[$key][stripslashes($k)];
+            } else {
+                $process[$key][stripslashes($k)] = stripslashes($v);
+            }
+        }
+    }
+    unset($process);
+}
+
 # Include the Markdown library
 include_once "markdown.php";
 
 # Gather input
 $title 		= $_POST['title'];
 $content 	= Markdown($_POST['content']);
-$excerpt 	= $_POST['excerpt'];
+$excerpt 	= substr($_POST['content'], 0, 250) . "...";
+$date 		= "Posted on " . date("l, F d, Y");
 
-$recent_posts_file 	= "../includes/recent_posts.php";
-$blog_index_file 	= "../includes/blog_index.php";
+$recent_posts_file 		= "../includes/recent_posts.php";
+$blog_index_file 		= "../includes/blog_index.php";
+$hp_recent_posts_file 	= "../includes/hp_recent_posts.php";
+
+//$recent_posts_content = trim($title);
+//$recent_posts_content = str_replace(" ", "-", $recent_posts_content);
+$recent_posts_content = trim(preg_replace('/[^a-z0-9]+/', '-', strtolower($title)), '-');
+
+# Create a backup of the post
+$backup_contents 	= $title . "\n\n" . $_POST['content'];
+$backup_file 		= "../backups/$recent_posts_content.md";
+file_put_contents($backup_file, $backup_contents);
 
 # Write to recent_posts file
-$recent_posts_content = trim($title);
-$recent_posts_content = str_replace(" ", "-", $recent_posts_content);
-
 // Open the file to get existing content
 $current = file_get_contents($recent_posts_file);
 // Append a new person to the file
-$current .= "<li><a href='http://asapquotes.com/blog/" . mb_strtolower($recent_posts_content) . ".html'>$title</a></li>" . "\n";
+$new = "<li><a href='http://asapquotes.com/blog/" . mb_strtolower($recent_posts_content) . ".html'>$title</a></li>" . "\n" . $current;
 // Write the contents back to the file
-file_put_contents($recent_posts_file, $current);
+file_put_contents($recent_posts_file, $new);
 
 # Write to blog_index file
 // Open the file to get existing content
 $current = file_get_contents($blog_index_file);
 // Append a new person to the file
-$current .= "<div class='post-data'><h1><a href='http://asapquotes.com/blog/" . mb_strtolower($recent_posts_content) . ".html'>$title</a></h1><p>$excerpt</p><p><a href='http://asapquotes.com/blog/" . mb_strtolower($recent_posts_content) . ".html'>Read more</a></p></div>" . "\n";
+$new = "<div class='post-data'>
+			<h2><a href='http://asapquotes.com/blog/" . mb_strtolower($recent_posts_content) . ".html'>$title</a></h2>
+			<h3 class='post-date'>$date</h3>
+			<p>$excerpt</p>
+			<p><a class='readmore' href='http://asapquotes.com/blog/" . mb_strtolower($recent_posts_content) . ".html'>Read more</a></p>
+		</div>" . "\n" . $current;
 // Write the contents back to the file
-file_put_contents($blog_index_file, $current);
+file_put_contents($blog_index_file, $new);
+
+# Write to the homepage recent posts file
+// Open the file to get existing content
+$current = file_get_contents($hp_recent_posts_file);
+// Append a new person to the file
+$new = "<li><h4><a class='hp-recent-link' href='http://asapquotes.com/blog/" . mb_strtolower($recent_posts_content) . ".html'>$title</a></h4><span class='hp-post-date'>$date</span></li>" . "\n" . $current;
+// Write the contents back to the file
+file_put_contents($hp_recent_posts_file, $new);
 
 # Begin building the new post page
 ob_start();
@@ -47,7 +85,7 @@ ob_start();
 	<meta name="description" content="<?php echo $excerpt; ?>" />
 	
 	<?php include("../../includes/header_init.php"); ?>
-	
+	<link rel="stylesheet" type="text/css" href="includes/blog.css" />
 </head>
 
 <body>
@@ -65,13 +103,25 @@ ob_start();
 			</div>
 			
 			<div class="right_column">
-					<h1><span></span><?php echo $title; ?></h1>
-					<p>Keep up with the latest industry news, tips, and more</p>
-					<div id="single-post" class="">
-						<?php echo $content; ?>
-					</div>
-					<a href="http://asapquotes.com/blog">&larr; Back to the blog</a>
-
+				<h1><span></span><?php echo $title; ?></h1>
+				<p class="post-date"><?php echo $date; ?></p>
+				<div id="single-post" class="">
+					<?php echo $content; ?>
+				</div>
+				<a href="http://asapquotes.com/blog">&larr; Back to the blog</a>
+				<div id="post-comments">
+					  <div id="disqus_thread"></div>
+				        <script type="text/javascript">
+				            var disqus_shortname = 'asapquotes';
+				            (function() {
+				                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+				                dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+				                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+				            })();
+				        </script>
+				        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+				        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+				</div>
 			</div>
 			<div class="clear"></div>
 		</div>
