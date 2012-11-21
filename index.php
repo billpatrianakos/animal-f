@@ -7,6 +7,7 @@
 	<meta name="description" content="Visit ASAP Quotes to access our database of insurance and insurance lead whitepapers!" />
 	
 	<?php include("../includes/header_init.php"); ?>
+	<link rel="stylesheet" type="text/css" href="includes/blog.css" />
 	
 </head>
 
@@ -18,6 +19,7 @@
 		
 		<div id="wrapper_inner">
 			<div class="left_column">
+				<h4>Recent Posts</h4>
 				<ul id="recent-posts">
 					<?php include("includes/recent_posts.php"); ?>
 				</ul>

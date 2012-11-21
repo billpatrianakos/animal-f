@@ -56,15 +56,7 @@ else {
 	</header>
 	<section id="main-container" class="container">
 		<section id="first-row" class="row">
-			<article class="two">
-				<div class="sidebar_module">
-					<h4>Options</h4>
-					<p>
-						Coming soon.
-					</p>
-				</div>
-			</article>
-			<article class="ten last">
+			<article class="twelve">
 				<div class="<?php echo $success; ?>">
 					<p>
 						<strong><i class="icon-heart-empty"></i> Success!</strong>
@@ -83,10 +75,8 @@ else {
 						<input type="text" name="title" placeholder="Plans for world domination..." />
 						<br />
 						<textarea id="content" name="content" placeholder="Once upon a time..."></textarea>
-						<br /><br />
-						<label>Post excerpt (Optional)</label>
-						<br />
-						<textarea id="excerpt" name="excerpt" placeholder="Only write in here if you want the post preview to be different than the first paragraph of the actual blog post"></textarea>
+						<div id="output"></div>	
+						<div style="display: block; clear: both;"></div>					
 						<p>
 							<small>Copy and paste a small portion of your post here or write an overview of your post. This will show just below the title of your post on the main page of posts.</small>
 						</p>
@@ -100,7 +90,7 @@ else {
 		<section class="row">
 			<article class="twelve">
 				<p class="centered-text">
-					&copy; Copyright 2012 Everybody | <strong>Animal F.</strong> is a Bill Patrianakos production. Enjoy. | Version 0.6
+					&copy; Copyright 2012 Everybody | <strong>Animal F.</strong> is a Bill Patrianakos production. Enjoy. | Version 0.8
 				</p>
 			</article>
 		</section>
@@ -111,6 +101,30 @@ else {
 	<script>window.jQuery || document.write('<script src="js/libs/jquery1.8.2.min.js">\x3C/script>')</script>
 	<script src="js/plugins.js"></script>
 	<script src="js/scripts.js"></script>
+	<script type="text/javascript">
+		// Live Preview
+		var example = [
+		"# Live Preview!",
+		"Just type in the box to the right and a preview will show up here."
+		].join("\n");
+
+		$(function() {
+		//$("#content").val(example);
+		$("#output").html(markdown.toHTML(example));
+		$("#output").html(markdown.toHTML(example));
+		$("#content").bind("keyup", function() {
+		$("#output").html(markdown.toHTML($("#content").val()));
+		});
+
+		//reference
+		$("table#reference tr td:odd").each(function(index, element) {
+		var self = $(element);
+		if (self.html() === "") {
+		  self.html(markdown.toHTML(self.siblings().html()));
+		}
+		});
+		});
+	</script>
 
 
 	<!--[if lt IE 7 ]>

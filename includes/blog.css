@@ -1,0 +1,56 @@
+/* Blog-specific styles */
+
+#recent-posts {
+	padding-right: 5px;
+}
+
+#recent-posts li {
+	margin-left: 0;
+	padding-left: 0;
+	color: #1A74A9;
+}
+
+.post-data {
+	margin-bottom: 20px;
+}
+
+.post-data h2 {
+	line-height: 5px;
+	margin-top: 25px;
+}
+
+.readmore, .readmore:visited {
+	padding: 6px 12px;
+	background: #DFDFDF;
+	color: #2993CE;
+	font-weight: bold;
+	margin-top: 5px;
+	display: block;
+	width: 80px;
+	text-align: center;
+	-o-border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	border: 1px solid #CBCBCB;
+}
+
+.readmore:hover {
+	padding: 6px 12px;
+	background: #007CE0;
+	color: #f7f7f7;
+	font-weight: bold;
+	margin-top: 5px;
+	display: block;
+	width: 80px;
+	text-align: center;
+	-o-border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	border: 1px solid #5DB1F1;
+}
+
+.left_column h4 {
+	margin-left: 40px;
+}
